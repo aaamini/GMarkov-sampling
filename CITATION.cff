@@ -2,8 +2,8 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: On perfectness in Gaussian graphical models
-message: Please cite the above paper if you use the code
+title: G-Markov Sampling
+message: Please cite the paper "On perfectness in Gaussian graphical models" if you use the code
 type: software
 authors:
   - given-names: Arash A.
@@ -19,3 +19,5 @@ authors:
     family-names: Zhou
     email: zhou@stat.ucla.edu
     affiliation: UCLA
+url: "https://github.com/aaamini/GMarkov-sampling"
+
