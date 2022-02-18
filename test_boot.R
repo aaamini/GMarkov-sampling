@@ -1,6 +1,7 @@
 library(clime)
 library(glasso)
 library(tidyr)
+library(dplyr)
 library(tibble)
 library(ggplot2)
 
@@ -8,9 +9,10 @@ source("viz.R")
 source("utils.R")
 
 # This is assumes Gam_seq exists in the environment -- e.g. run test_rand_sampling.R
+source("test_rand_sampling.R")
 
 # This is just the vector of lambdas for computing the regularization path (glasso calls lambda rho)
-rholist = 10^seq(-2.5,0, len=50)
+rholist = 10^seq(-2.5,0, len=100)
 
 ### Many regularization paths and the average
 n = 50
@@ -26,8 +28,8 @@ reg_path = do.call(
     
     data.frame(
       lambda = rholist,
-      glasso = apply(Omegalist_glasso, 3, function(G) norm(G - Gam)), 
-      clime = sapply(clime_out$Omegalist, function(G) norm(G - Gam)),
+      glasso = apply(Omegalist_glasso, 3, function(G) norm(G - Gam)/norm(Gam)), 
+      clime = sapply(clime_out$Omegalist, function(G) norm(G - Gam)/norm(Gam)),
       n = n, 
       rep = rep
     )
@@ -38,12 +40,12 @@ reg_path %>%
   pivot_longer(c(glasso, clime), names_to = "method", values_to = "error") %>% 
   plot_paths_and_avg(error, alpha_range = c(0.2,1)) + 
   scale_x_continuous(trans = "log10") +
-  ylim(c(0.25, 2.5)) +
+  ylim(c(0.2, 1.4)) +
   inline_legend(0.2,0.2) +
   xlab("Regularization parameter") +
-  ylab("Operator norm error") 
+  ylab("Operator norm relative error") 
   
-ggsave(sprintf("reg_path_many_reps_n = %d.pdf", n), width = 5, height = 5)  
+ggsave(sprintf("reg_path_rel_many_reps_n = %d.pdf", n), width = 5, height = 5)  
 
 
 ### Plot a single reg_path
@@ -72,7 +74,7 @@ rholist[which.min(reg_path1$glasso)]
 rholist[which.min(reg_path1$clime)]
 
 ### Simple test
-lambda = 0.12
+lambda = 0.12 # roughly the optimal lambda for both methods
 Gamh_glasso = glasso(as.matrix(Sigh), lambda)$wi
 Gamh_clime = clime(Sigh, lambda = lambda, sigma = T)$Omega[[1]]
 

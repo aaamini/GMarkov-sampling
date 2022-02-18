@@ -32,6 +32,8 @@ make_prec_mat = function(eps, Del) {
   A
 }
 
+# The main point of the code -- samples from G-Markov precision matrices with
+# unit diagonal entries
 sample_prec_mat = function(G) {
   Del = sample_Del(G)
   epsmax = find_epsmax(Del)
@@ -67,8 +69,8 @@ image(Gam_mean)
 Gam = Gam_seq[[1]]
 Sigh = gen_data_from_Gam(50, Gam)$Sigh
 image(Sigh)
-image(Sig)
-norm(Sigh - Sig)/norm(Sig)
+# image(Sig)
+# norm(Sigh - Sig)/norm(Sig)
 
 # verify that the thresholding produces the same graph for all population level Gamma's
 G_seq = lapply(Gam_seq, extract_graph, tol = 1e-4)
